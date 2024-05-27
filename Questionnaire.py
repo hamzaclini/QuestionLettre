@@ -10,23 +10,37 @@ st.set_page_config(page_title="Clinicog Questionaire", page_icon="🧠")
 
 # Function to check password
 def check_password(questionnaire_passwords):
-    """Returns the name of the questionnaire if the user had the correct password."""
+    """Returns the name of the questionnaire if the user has the correct password."""
 
     def password_entered():
         """Checks whether a password entered by the user is correct."""
+        password_correct = False  # Assume the password is incorrect initially
         for key, value in questionnaire_passwords.items():
             if hmac.compare_digest(st.session_state["password"], value):
-                st.session_state["password_correct"] = True
+                password_correct = True
                 st.session_state["questionnaire"] = key
-                del st.session_state["password"]  # Don't store the password.
-                return
-        st.session_state["password_correct"] = False
+                break
+        
+        st.session_state["password_correct"] = password_correct
+        st.session_state["password_attempted"] = True
+        del st.session_state["password"]  # Always delete the password after checking
+
+    # Initialize the state
+    if "password" not in st.session_state:
+        st.session_state["password"] = ""
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = None
+    if "password_attempted" not in st.session_state:
+        st.session_state["password_attempted"] = False
 
     # Show input for password in the main page.
-    if "password_correct" not in st.session_state:
-        input_pass = st.text_input("Password", type="password",on_change=password_entered, key="password")
-        if "password_correct" in st.session_state and not st.session_state["password_correct"]:
+    if not st.session_state["password_correct"]:
+        st.text_input("Password", type="password", on_change=password_entered, key="password")
+
+        # Check if password is incorrect
+        if st.session_state["password_attempted"] and not st.session_state["password_correct"]:
             st.error("😕 Password incorrect")
+        
         st.stop()
     else:
         return st.session_state.get("questionnaire", None)
@@ -36,7 +50,9 @@ questionnaire_passwords = {k: v for k, v in st.secrets["passwords"].items()}
 
 # Check password and get the corresponding questionnaire
 questionnaire_name = check_password(questionnaire_passwords)
-if not questionnaire_name:
+if questionnaire_name:
+    pass
+else:
     st.stop()  # Do not continue if the password is not correct.
 
 @st.cache_resource
