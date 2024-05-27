@@ -216,7 +216,7 @@ if "disabled" not in st.session_state:
      
 left_co, cent_co,last_co = st.columns(3)
 with cent_co:
-    button = st.button('Enregisterez', disabled=st.session_state.disabled)
+    button = st.button('Enregistrer', disabled=st.session_state.disabled)
     st.image("clinicogImg.png", width=200)
 
 if button:
