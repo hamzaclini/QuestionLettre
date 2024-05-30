@@ -100,12 +100,12 @@ def stringify(i:int = 0) -> str:
 
 def write_data(new_data):
     db = client.Questions
-    db.Lettre.insert_one(new_data)
+    db.Lettres.insert_one(new_data)
 
 
 def check_data(code):
     db = client.Questions
-    collection = db.Lettre
+    collection = db.Lettres
     query = {"user.Code": code}
     result = collection.find_one(query)
     #print(result)
