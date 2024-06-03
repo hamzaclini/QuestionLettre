@@ -132,7 +132,7 @@ def read_data_file(file_path):
 
     return all_lists
 
-all_data = read_data_file(questionnaire_name + ".txt")
+all_data = read_data_file("./questionnaires/" + questionnaire_name + ".txt")
 
 st.write(f"""
 # {all_data[0]}
